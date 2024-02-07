@@ -1,0 +1,28 @@
+/* Styles to center the heading and footer text */
+h1, footer {
+    text-align: center;
+}
+
+/* Styles to center and define size for the image placeholder */
+.image-placeholder {
+    display: flex;
+    justify-content: center;
+    margin-top: 100px; /* Adjusts the position to the middle of the page */
+}
+
+img {
+    max-width: 60%; /* Large rectangle size, adjust as needed */
+    height: auto; /* Maintains aspect ratio */
+}
+
+/* Styles for the footer */
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #f0f0f0; /* Light grey background */
+    color: black;
+    text-align: center;
+    padding: 10px 0; /* Adds padding above and below the text */
+}
