@@ -1,0 +1,79 @@
+/* Basic reset for list styles */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Header Styles */
+header {
+    background-color: #add8e6; /* Light blue */
+    padding: 20px 0; /* Add some padding */
+    text-align: center; /* Center the heading text */
+}
+
+/* Navigation Menu Styles */
+nav#menu ul {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+    padding: 0;
+    margin: 0; /* Remove default margin */
+    background-color: #333; /* Keep the menu bar black */
+}
+
+nav#menu li {
+    margin: 0 20px;
+}
+
+nav#menu a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px; /* Add padding for clickable area */
+    display: block; /* Makes the entire area of the list item clickable */
+}
+
+/* Main content layout adjustments */
+main {
+    display: flex;
+    margin-top: 20px; /* Space from the menu to the main content */
+}
+
+#data-logs {
+    width: 250px; /* Fixed width for the logs */
+    margin-top: 20px; /* Top margin to align with the navigation bar */
+    margin-bottom: 20px; /* Bottom margin for spacing */
+    padding: 20px;
+    background-color: #f0f0f0;
+    overflow-y: auto; /* Enable scroll for overflow content */
+    position: relative; /* To position it properly within main */
+    box-sizing: border-box; /* Include padding and border in the width */
+}
+
+.image-placeholder {
+    flex-grow: 1; /* Take up the remaining space */
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: flex-start; /* Align to the top */
+    margin-left: 20px; /* Space between the chat log box and the image */
+    margin-bottom: 20px; /* Bottom margin for spacing */
+}
+
+img {
+    max-width: 100%; /* Ensure the image is not bigger than the container */
+    max-height: calc(100vh - 100px); /* Adjust based on header/footer height */
+    height: auto; /* Maintain aspect ratio */
+}
+
+/* Footer Styles */
+footer {
+    width: 100%;
+    background-color: #f0f0f0;
+    color: black;
+    text-align: center;
+    padding: 10px 0;
+    position: relative; /* Change from fixed to relative */
+    bottom: 0; /* Keep it at the bottom */
+    left: 0; /* Align left */
+}
+
