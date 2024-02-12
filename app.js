@@ -5,14 +5,20 @@ const db = require('./Website/databaseConnection'); // Update the path as necess
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(express.json());
+app.use(express.static('website'));
 
 function fetchLatestBusLocation() {
   return new Promise((resolve, reject) => {
     const query = 'SELECT * FROM bus_locations ORDER BY timestamp DESC LIMIT 1';
     db.query(query, (error, results) => {
       if (error) return reject(error);
-      resolve(results[0]);
+      resolve({
+        latitude: results[0].latitude, // Adjust based on your column name
+        longitude: results[0].longitude // Adjust based on your column name
+      });
+      
     });
   });
 }

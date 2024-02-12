@@ -15,8 +15,8 @@ function initMap() {
   updateBusLocationOnMap(map);
 }
 
-function updateBusLocationOnMap(map) {
-  fetch('/api/latest-bus-location')
+function updateBusLocationOnMap() {
+  fetch('http://localhost:3000/api/latest-bus-location')
     .then(response => response.json())
     .then(data => {
       const newPos = new google.maps.LatLng(data.latitude, data.longitude);
@@ -25,5 +25,6 @@ function updateBusLocationOnMap(map) {
     })
     .catch(error => console.error('Error fetching latest bus location:', error));
 }
+
 
 document.addEventListener('DOMContentLoaded', initMap); // Call initMap when the page loads
