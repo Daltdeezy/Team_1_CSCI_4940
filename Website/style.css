@@ -64,6 +64,11 @@ nav#menu a {
     height: calc(100vh - 160px); /* Adjust based on the actual header and footer height */
 }
 
+#map {
+    height: 600px; /* Adjust height as needed */
+    width: 100%;   /* Adjust width as needed */
+  }
+
 /* Main content styles specific to the info page */
 .info-content {
     display: flex;

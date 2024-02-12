@@ -22,10 +22,18 @@
         <section id="data-logs">
             <p>This is where the dummy data logs will go!</p>
         </section>
-        <div class="image-placeholder">
-            <img src="https://raw.githubusercontent.com/Daltdeezy/Team_1_CSCI_4940/main/images/acf-google-map-field-interface.png" alt="School Activity Image">
-        </div>
+        <div id="map"></div>
+        <script>
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 32.06008725572105, lng: -84.23299341769619}, // Example coordinates
+                zoom: 16
+            });
+        }
+        </script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6Vp8qKvkB2p0CIZwnVMZQNGsO-UAd0sU&callback=initMap&libraries=&v=weekly"></script>
     </main>
+    
 
     <footer>
         Dalton and Binita / Work in Progress
