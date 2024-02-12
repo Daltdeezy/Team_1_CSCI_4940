@@ -1,11 +1,13 @@
+// databaseConnection.js
 const mysql = require('mysql');
-
-// Database connection configuration
 const dbConfig = {
-  host: 'your-rds-hostname.amazonaws.com',
+  host: 'finalproject.c76memgkqbni.us-east-2.rds.amazonaws.com',
   user: 'admin',
   password: 'Trashcan2002!',
   database: 'FinalProject',
+  ssl: {
+    rejectUnauthorized: true
+  }
 };
 
 const connection = mysql.createConnection(dbConfig);
