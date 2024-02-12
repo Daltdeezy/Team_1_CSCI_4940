@@ -1,5 +1,6 @@
 // app.js
 const express = require('express');
+const cors = require('cors');
 const db = require('./Website/databaseConnection'); // Update the path as necessary
 
 const app = express();

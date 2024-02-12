@@ -4,9 +4,9 @@ const dbConfig = {
   host: 'finalproject.c76memgkqbni.us-east-2.rds.amazonaws.com',
   user: 'admin',
   password: 'Trashcan2002!',
-  database: 'FinalProject',
+  database: 'AWS',
   ssl: {
-    rejectUnauthorized: true
+    rejectUnauthorized: false
   }
 };
 
