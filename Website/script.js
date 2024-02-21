@@ -1,36 +1,38 @@
-// Assuming this script is linked in an HTML file that also includes the Google Maps API and a map is initialized
-let busMarker; // Define this globally if you want to update the same marker position
+// This script is linked in an HTML file that also includes the Google Maps API.
+let map; // This will hold the map instance.
 
 function initMap() {
-  // Initialize your map and store it in a global variable if needed
-  const map = new google.maps.Map(document.getElementById('map'), {
+  // Initialize the map and store it in the 'map' variable.
+  map = new google.maps.Map(document.getElementById('map'), {
     zoom: 12,
     center: {lat: 32.06012366850837, lng: -84.2327359745911}, // Default center
   });
-  busMarker = new google.maps.Marker({
-    position: {lat: 32.06012366850837, lng: -84.2327359745911}, // Default position
-    map: map,
-    title: 'Bus Location'
-  });
-  updateBusLocationOnMap(map);
+
+  // Call the function to update bus locations on the map.
+  updateBusLocationsOnMap();
 }
-function updateMapCenter(lat, lng) {
-  if (map && typeof map.setCenter === 'function') {
-    map.setCenter(new google.maps.LatLng(lat, lng));
-  } else {
-    console.error('Map is not initialized');
-  }
-}
-function updateBusLocationOnMap() {
-  fetch('http://localhost:3000/api/latest-bus-location')
+
+function updateBusLocationsOnMap() {
+  fetch('http://localhost:3000/api/latest-bus-locations') // Adjust the endpoint as necessary.
     .then(response => response.json())
     .then(data => {
-      const newPos = new google.maps.LatLng(data.latitude, data.longitude);
-      busMarker.setPosition(newPos);
-      map.setCenter(newPos);
+      // Clear existing markers if necessary.
+      // If you keep a reference to old markers, you could remove them here.
+
+      // Create a marker for each bus location received.
+      // Create a marker for each bus location received.
+    data.forEach(bus => {
+       new google.maps.Marker({
+        position: {lat: Number(bus.latitude), lng: Number(bus.longitude)}, // Make sure lat and lng are numbers
+       map: map,
+    title: `Bus ${bus.busNumber}` // match the case of `busNumber`
+    });
+  });
+
     })
-    .catch(error => console.error('Error fetching latest bus location:', error));
+    .catch(error => console.error('Error fetching bus locations:', error));
 }
 
-
-document.addEventListener('DOMContentLoaded', initMap); // Call initMap when the page loads
+// No need for the DOMContentLoaded listener if you are using the 'defer' attribute in the script tag.
+// But if you are not using 'defer', then this is needed.
+document.addEventListener('DOMContentLoaded', initMap);
