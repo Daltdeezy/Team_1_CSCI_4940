@@ -12,12 +12,12 @@ app.use(express.static('website'));
 
 function fetchLatestBusLocation() {
   return new Promise((resolve, reject) => {
-    const query = 'SELECT * FROM bus_locations ORDER BY timestamp DESC LIMIT 1';
+    const query = 'SELECT * FROM AWS.Locations ORDER BY timestamp DESC LIMIT 1';
     db.query(query, (error, results) => {
       if (error) return reject(error);
       resolve({
-        latitude: results[0].latitude, // Adjust based on your column name
-        longitude: results[0].longitude // Adjust based on your column name
+        latitude: results[0].Latitude, // Adjust based on your column name
+        longitude: results[0].Longitude // Adjust based on your column name
       });
       
     });

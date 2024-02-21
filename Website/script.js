@@ -14,7 +14,13 @@ function initMap() {
   });
   updateBusLocationOnMap(map);
 }
-
+function updateMapCenter(lat, lng) {
+  if (map && typeof map.setCenter === 'function') {
+    map.setCenter(new google.maps.LatLng(lat, lng));
+  } else {
+    console.error('Map is not initialized');
+  }
+}
 function updateBusLocationOnMap() {
   fetch('http://localhost:3000/api/latest-bus-location')
     .then(response => response.json())
