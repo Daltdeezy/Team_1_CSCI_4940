@@ -44,9 +44,9 @@ nav#menu a {
 /* Styles for the chat log box on the main page */
 #data-logs {
     width: 250px;
-    margin-top: 20px;
+    margin-top: 120px;
     padding: 20px;
-    background-color: #add8e6;
+    background-color: #add8e6; /* Background color for the chat box */
     overflow-y: auto;
     box-sizing: border-box;
     flex: none;
@@ -54,7 +54,7 @@ nav#menu a {
 }
 
 .message-input {
-    margin-top: 10px;
+    margin-top: 10px; /* Spacing between the messages and input */
     display: flex;
     align-items: center;
 }
@@ -68,16 +68,16 @@ nav#menu a {
 
 .message-input button {
     padding: 8px 15px;
-    background-color: #333;
-    color: white;
+    background-color: #333; /* Background color for the send button */
+    color: white; /* Text color for the send button */
     border: none;
     border-radius: 4px;
-    cursor: pointer;
+    cursor: pointer; /* Changes the cursor to pointer for the button */
     margin-left: 10px;
 }
 
 .message-input button:hover {
-    background-color: #73abbd;
+    background-color: #73abbd; /* Background color for the send button on hover */
 }
 
 .image-placeholder {
