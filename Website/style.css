@@ -44,13 +44,13 @@ nav#menu a {
 /* Styles for the chat log box on the main page */
 #data-logs {
     width: 250px;
-    margin-top: 120px;
+    margin-top: 80px;
     padding: 20px;
     background-color: #add8e6; /* Background color for the chat box */
     overflow-y: auto;
     box-sizing: border-box;
     flex: none;
-    height: 350px; /* Adjust based on the actual header and footer height */
+    height: 450px; /* Adjust based on the actual header and footer height */
 }
 
 .message-input {
@@ -64,6 +64,7 @@ nav#menu a {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    margin-top: 10px;
 }
 
 .message-input button {
@@ -74,6 +75,8 @@ nav#menu a {
     border-radius: 4px;
     cursor: pointer; /* Changes the cursor to pointer for the button */
     margin-left: 10px;
+    margin-top: 10px;
+
 }
 
 .message-input button:hover {

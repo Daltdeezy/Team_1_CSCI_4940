@@ -12,6 +12,45 @@ function initMap() {
   updateBusLocationsOnMap();
 }
 
+// Wait for the DOM content to be loaded
+document.addEventListener("DOMContentLoaded", function() {
+  // Get the input field and send button elements
+  var inputField = document.querySelector('.message-input input[type="text"]');
+  var sendButton = document.querySelector('.message-input button');
+  var scrollableContent = document.querySelector('.scrollable-content');
+
+  // Add click event listener to the send button
+  sendButton.addEventListener('click', function() {
+      // Get the value of the input field
+      var message = inputField.value;
+
+      // Check if the message is not empty
+      if (message.trim() !== '') {
+          // Create a new paragraph element
+          var newMessage = document.createElement('p');
+          // Set the text content of the new paragraph to the message
+          newMessage.textContent = message;
+          // Append the new paragraph to the scrollable content
+          scrollableContent.appendChild(newMessage);
+          // Clear the input field
+          inputField.value = '';
+          // Scroll to the bottom of the scrollable content
+          scrollableContent.scrollTop = scrollableContent.scrollHeight;
+      }
+  });
+
+  // Optionally, you can also allow pressing Enter key to send the message
+  inputField.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+          // Prevent the default form submission behavior
+          event.preventDefault();
+          // Trigger the click event on the send button
+          sendButton.click();
+      }
+  });
+});
+
+
 function updateBusLocationsOnMap() {
   fetch('http://localhost:3000/api/latest-bus-locations') // Adjust the endpoint as necessary.
     .then(response => response.json())
