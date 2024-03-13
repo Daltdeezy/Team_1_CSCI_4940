@@ -12,7 +12,6 @@ app.use(express.static('website'));
 
 function fetchAllBusLocations() {
   return new Promise((resolve, reject) => {
-    // The SQL query will need to be modified to return the latest record for each bus
     const query = `
       SELECT 
         l1.BusNumber,

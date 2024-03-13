@@ -52,17 +52,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 function updateBusLocationsOnMap() {
-  fetch('http://localhost:3000/api/latest-bus-locations') // Adjust the endpoint as necessary.
+  fetch('http://localhost:3000/api/latest-bus-locations') 
     .then(response => response.json())
     .then(data => {
-      // Clear existing markers if necessary.
-      // If you keep a reference to old markers, you could remove them here.
 
-      // Create a marker for each bus location received.
+
       // Create a marker for each bus location received.
     data.forEach(bus => {
        new google.maps.Marker({
-        position: {lat: Number(bus.latitude), lng: Number(bus.longitude)}, // Make sure lat and lng are numbers
+        position: {lat: Number(bus.latitude), lng: Number(bus.longitude)}, 
        map: map,
     title: `Bus ${bus.busNumber}` // match the case of `busNumber`
     });
@@ -72,6 +70,4 @@ function updateBusLocationsOnMap() {
     .catch(error => console.error('Error fetching bus locations:', error));
 }
 
-// No need for the DOMContentLoaded listener if you are using the 'defer' attribute in the script tag.
-// But if you are not using 'defer', then this is needed.
 document.addEventListener('DOMContentLoaded', initMap);
