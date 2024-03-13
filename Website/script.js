@@ -51,23 +51,37 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
+let busMarkers = []; // Array to hold bus marker instances
+
 function updateBusLocationsOnMap() {
+  // Clear existing markers from the map
+  busMarkers.forEach(marker => marker.setMap(null));
+  busMarkers = []; // Reset the markers array
+
   fetch('http://localhost:3000/api/latest-bus-locations') 
     .then(response => response.json())
     .then(data => {
-
-
       // Create a marker for each bus location received.
-    data.forEach(bus => {
-       new google.maps.Marker({
-        position: {lat: Number(bus.latitude), lng: Number(bus.longitude)}, 
-       map: map,
-    title: `Bus ${bus.busNumber}` // match the case of `busNumber`
-    });
-  });
-
+      data.forEach(bus => {
+        let marker = new google.maps.Marker({
+          position: {lat: Number(bus.latitude), lng: Number(bus.longitude)}, 
+          map: map,
+          title: `Bus ${bus.busNumber}` // Ensuring `busNumber` is correctly referenced
+        });
+        busMarkers.push(marker); // Add the marker to the array for later reference
+      });
     })
     .catch(error => console.error('Error fetching bus locations:', error));
 }
 
-document.addEventListener('DOMContentLoaded', initMap);
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Existing code for message input and button handling
+  
+  initMap(); // Initialize the map
+
+  // Update bus locations every 30 seconds
+  setInterval(updateBusLocationsOnMap, 1000); // Adjust the interval as needed
+});
+
+
