@@ -56,38 +56,41 @@ let busMarkers = []; // Array to hold bus marker instances
 // Assuming each bus object has a unique 'id' you can use for tracking
 function updateBusLocationsOnMap() {
   fetch('http://localhost:3000/api/latest-bus-locations') 
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
     .then(data => {
-      const newBusData = new Map(data.map(bus => [bus.busNumber, bus])); // Use busNumber instead of id
+      console.log('Received data:', data); // Log data for debugging
+
+      const newBusData = new Map(data.map(bus => [bus.busNumber, bus])); // Create a map of new bus data
 
       // Update or create markers
       newBusData.forEach((bus, busNumber) => {
         const existingMarker = busMarkers.find(marker => marker.busNumber === busNumber);
         if (existingMarker) {
           // Update position of existing marker
-          existingMarker.setPosition(new google.maps.LatLng(Number(bus.latitude), Number(bus.longitude)));
+          existingMarker.setPosition(new google.maps.LatLng(bus.latitude, bus.longitude));
         } else {
-          // Create new marker
-          let marker = new google.maps.Marker({
-            position: {lat: Number(bus.latitude), lng: Number(bus.longitude)}, 
+          // Create a new marker
+          const marker = new google.maps.Marker({
+            position: new google.maps.LatLng(bus.latitude, bus.longitude),
             map: map,
-            title: `Bus ${bus.busNumber}`,
+            title: `Bus ${busNumber}`,
           });
-          marker.busNumber = busNumber; // Use busNumber for reference
+          marker.busNumber = busNumber; // Assign busNumber for reference
           busMarkers.push(marker);
         }
       });
 
       // Remove markers for buses that are no longer present
       busMarkers = busMarkers.filter(marker => {
-        if (!newBusData.has(marker.busNumber)) {
-          marker.setMap(null); // Remove marker from map
-          return false;
-        }
-        return true;
+        return newBusData.has(marker.busNumber);
       });
     })
-    .catch(error => console.error('Error fetching bus locations:', error));
+    .catch(error => console.error('Error fetching bus locations:', error)); // Log errors
 }
 
 
@@ -100,4 +103,5 @@ document.addEventListener('DOMContentLoaded', function() {
   setInterval(updateBusLocationsOnMap, 1000); // Adjust the interval as needed
 });
 
+setInterval(updateBusLocationsOnMap, 1000);
 
