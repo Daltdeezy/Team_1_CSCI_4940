@@ -53,8 +53,10 @@ function displayNextMessage() {
   const logsContainer = document.querySelector('.scrollable-content');
   if (messageIndex < messageQueue.length) {
     const message = messageQueue[messageIndex]; // Get the next message
+    const updateLabel = `Update ${messageIndex + 1}:`; // Construct the update label
+    const formattedMessage = `${updateLabel} ${message}`; // Prepend the message with the update label
     const p = document.createElement('p');
-    p.textContent = message;
+    p.textContent = formattedMessage;
     logsContainer.appendChild(p);
     messageIndex++; // Increment the index to point to the next message
     logsContainer.scrollTop = logsContainer.scrollHeight; // Scroll to the bottom
