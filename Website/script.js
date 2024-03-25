@@ -53,46 +53,26 @@ document.addEventListener("DOMContentLoaded", function() {
 
 let busMarkers = []; // Array to hold bus marker instances
 
-// Assuming each bus object has a unique 'id' you can use for tracking
 function updateBusLocationsOnMap() {
+  // Clear existing markers from the map
+  busMarkers.forEach(marker => marker.setMap(null));
+  busMarkers = []; // Reset the markers array
+
   fetch('http://localhost:3000/api/latest-bus-locations') 
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
-      console.log('Received data:', data); // Log data for debugging
-
-      const newBusData = new Map(data.map(bus => [bus.busNumber, bus])); // Create a map of new bus data
-
-      // Update or create markers
-      newBusData.forEach((bus, busNumber) => {
-        const existingMarker = busMarkers.find(marker => marker.busNumber === busNumber);
-        if (existingMarker) {
-          // Update position of existing marker
-          existingMarker.setPosition(new google.maps.LatLng(bus.latitude, bus.longitude));
-        } else {
-          // Create a new marker
-          const marker = new google.maps.Marker({
-            position: new google.maps.LatLng(bus.latitude, bus.longitude),
-            map: map,
-            title: `Bus ${busNumber}`,
-          });
-          marker.busNumber = busNumber; // Assign busNumber for reference
-          busMarkers.push(marker);
-        }
-      });
-
-      // Remove markers for buses that are no longer present
-      busMarkers = busMarkers.filter(marker => {
-        return newBusData.has(marker.busNumber);
+      // Create a marker for each bus location received.
+      data.forEach(bus => {
+        let marker = new google.maps.Marker({
+          position: {lat: Number(bus.latitude), lng: Number(bus.longitude)}, 
+          map: map,
+          title: `Bus ${bus.busNumber}` // Ensuring `busNumber` is correctly referenced
+        });
+        busMarkers.push(marker); // Add the marker to the array for later reference
       });
     })
-    .catch(error => console.error('Error fetching bus locations:', error)); // Log errors
+    .catch(error => console.error('Error fetching bus locations:', error));
 }
-
 
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -100,8 +80,26 @@ document.addEventListener('DOMContentLoaded', function() {
   
   initMap(); // Initialize the map
 
+  // Update bus locations every 30 seconds
   setInterval(updateBusLocationsOnMap, 1000); // Adjust the interval as needed
 });
 
-setInterval(updateBusLocationsOnMap, 1000);
+function fetchDelayMessages() {
+  fetch('http://localhost:5000/get-delay-message')
+      .then(response => response.json())
+      .then(data => {
+          const logsContainer = document.querySelector('.scrollable-content');
+          logsContainer.innerHTML = ''; // Clear existing content
+          data.messages.forEach(message => {
+              const p = document.createElement('p');
+              p.textContent = message;
+              logsContainer.appendChild(p);
+          });
+      })
+      .catch(error => console.error('Failed to fetch delay messages:', error));
+}
+
+// Call the function to fetch and display messages as soon as the page loads
+document.addEventListener('DOMContentLoaded', fetchDelayMessages);
+
 
