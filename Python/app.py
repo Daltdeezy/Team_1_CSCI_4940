@@ -1,8 +1,10 @@
 from flask import Flask, jsonify
 from trafficEvents import simulate_event_and_delay
 from nlpMessaging import generate_message
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/get-delay-message', methods=['GET'])
 def get_delay_message():
