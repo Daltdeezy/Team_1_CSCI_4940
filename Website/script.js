@@ -1,70 +1,29 @@
-// This script is linked in an HTML file that also includes the Google Maps API.
-let map; // This will hold the map instance.
+// Define global variables
+let map;
+let busMarkers = []; // Array to hold bus marker instances
+let messageQueue = [];
+let messageIndex = 0;
 
+// Initialize the map
 function initMap() {
-  // Initialize the map and store it in the 'map' variable.
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 12,
-    center: {lat: 32.06012366850837, lng: -84.2327359745911}, // Default center
+    center: { lat: 32.06012366850837, lng: -84.2327359745911 }, // Default center
   });
-
-  // Call the function to update bus locations on the map.
   updateBusLocationsOnMap();
 }
 
-// Wait for the DOM content to be loaded
-document.addEventListener("DOMContentLoaded", function() {
-  // Get the input field and send button elements
-  var inputField = document.querySelector('.message-input input[type="text"]');
-  var sendButton = document.querySelector('.message-input button');
-  var scrollableContent = document.querySelector('.scrollable-content');
-
-  // Add click event listener to the send button
-  sendButton.addEventListener('click', function() {
-      // Get the value of the input field
-      var message = inputField.value;
-
-      // Check if the message is not empty
-      if (message.trim() !== '') {
-          // Create a new paragraph element
-          var newMessage = document.createElement('p');
-          // Set the text content of the new paragraph to the message
-          newMessage.textContent = message;
-          // Append the new paragraph to the scrollable content
-          scrollableContent.appendChild(newMessage);
-          // Clear the input field
-          inputField.value = '';
-          // Scroll to the bottom of the scrollable content
-          scrollableContent.scrollTop = scrollableContent.scrollHeight;
-      }
-  });
-
-  // Optionally, you can also allow pressing Enter key to send the message
-  inputField.addEventListener('keypress', function(event) {
-      if (event.key === 'Enter') {
-          // Prevent the default form submission behavior
-          event.preventDefault();
-          // Trigger the click event on the send button
-          sendButton.click();
-      }
-  });
-});
-
-
-let busMarkers = []; // Array to hold bus marker instances
-
+// Update bus locations
 function updateBusLocationsOnMap() {
   // Clear existing markers from the map
   busMarkers.forEach(marker => marker.setMap(null));
   busMarkers = []; // Reset the markers array
-
-  fetch('http://localhost:3000/api/latest-bus-locations') 
+  fetch('http://localhost:3000/api/latest-bus-locations')
     .then(response => response.json())
     .then(data => {
-      // Create a marker for each bus location received.
       data.forEach(bus => {
         let marker = new google.maps.Marker({
-          position: {lat: Number(bus.latitude), lng: Number(bus.longitude)}, 
+          position: { lat: Number(bus.latitude), lng: Number(bus.longitude) },
           map: map,
           title: `Bus ${bus.busNumber}` // Ensuring `busNumber` is correctly referenced
         });
@@ -74,32 +33,38 @@ function updateBusLocationsOnMap() {
     .catch(error => console.error('Error fetching bus locations:', error));
 }
 
-
-document.addEventListener('DOMContentLoaded', function() {
-  // Existing code for message input and button handling
-  
-  initMap(); // Initialize the map
-
-  // Update bus locations every 30 seconds
-  setInterval(updateBusLocationsOnMap, 1000); // Adjust the interval as needed
-});
-
+// Fetch delay messages
 function fetchDelayMessages() {
+  console.log('Fetching messages...');
   fetch('http://localhost:5000/get-delay-message')
-      .then(response => response.json())
-      .then(data => {
-          const logsContainer = document.querySelector('.scrollable-content');
-          logsContainer.innerHTML = ''; // Clear existing content
-          data.messages.forEach(message => {
-              const p = document.createElement('p');
-              p.textContent = message;
-              logsContainer.appendChild(p);
-          });
-      })
-      .catch(error => console.error('Failed to fetch delay messages:', error));
+    .then(response => response.json())
+    .then(data => {
+      messageQueue = data.messages; // Store the messages in the queue
+      messageIndex = 0; // Reset the index to 0
+    })
+    .catch(error => console.error('Failed to fetch delay messages:', error));
+    console.log(messageQueue);
+    setInterval(displayNextMessage, 5000); // Display messages every 5 seconds
 }
 
-// Call the function to fetch and display messages as soon as the page loads
+// Display the next message from the queue
+function displayNextMessage() {
+  console.log('Displaying next message...');
+  const logsContainer = document.querySelector('.scrollable-content');
+  if (messageIndex < messageQueue.length) {
+    const message = messageQueue[messageIndex]; // Get the next message
+    const p = document.createElement('p');
+    p.textContent = message;
+    logsContainer.appendChild(p);
+    messageIndex++; // Increment the index to point to the next message
+    logsContainer.scrollTop = logsContainer.scrollHeight; // Scroll to the bottom
+  }
+}
+
+// DOMContentLoaded listener to set everything up
 document.addEventListener('DOMContentLoaded', fetchDelayMessages);
 
-
+  initMap(); // Initialize the map
+  fetchDelayMessages(); // Fetch messages
+  setInterval(updateBusLocationsOnMap, 1000); // Update bus locations every 30 seconds
+ 
