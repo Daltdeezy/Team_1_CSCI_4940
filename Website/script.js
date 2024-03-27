@@ -45,6 +45,7 @@ function fetchDelayMessages() {
     .catch(error => console.error('Failed to fetch delay messages:', error));
     console.log(messageQueue);
     setInterval(displayNextMessage, 5000); // Display messages every 5 seconds
+    setInterval(updateBusLocationsOnMap, 1000); // Update bus locations every 30 seconds
 }
 
 // Display the next message from the queue
@@ -67,6 +68,6 @@ function displayNextMessage() {
 document.addEventListener('DOMContentLoaded', fetchDelayMessages);
 
   initMap(); // Initialize the map
+  
   fetchDelayMessages(); // Fetch messages
-  setInterval(updateBusLocationsOnMap, 1000); // Update bus locations every 30 seconds
  
