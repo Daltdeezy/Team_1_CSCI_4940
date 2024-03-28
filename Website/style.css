@@ -38,7 +38,21 @@ nav#menu a {
 .main-content {
     display: flex;
     padding-top: 20px; /* Spacing from the top menu */
+}
 
+/* Styling for the Dropdown menu */
+.dropdown {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.dropdown select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    transition: border-color 0.3s; /* Adding transition for smoother color change */
 }
 
 /* Styles for the chat log box on the main page */
