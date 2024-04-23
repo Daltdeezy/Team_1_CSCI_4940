@@ -3,6 +3,7 @@ let busMarkers = []; // Array to hold bus marker instances
 let messageQueue = [];
 let messageIndex = 0;
 
+
 // Initialize the map
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -34,13 +35,6 @@ function fetchBusRoutes() {
 
 fetchBusRoutes(); // Initial call to fetch routes
 
-
-// Call fetchBusLocations periodically to update data
-//setInterval(fetchBusRoutes, 3000); // Fetch new data every 10 seconds
-// Use setInterval to update the locations every few seconds
-//setInterval(updateBusMarkers, 3000); // Update every 10 seconds
-
-
 // Fetch delay messages
 function fetchDelayMessages() {
   console.log('Fetching messages...');
@@ -53,34 +47,42 @@ function fetchDelayMessages() {
     })
     .catch(error => console.error('Failed to fetch delay messages:', error));
     
-    setInterval(displayNextMessage, 5000); // Display messages every 5 seconds
+    setInterval(displayNextMessage, 8000); // Display messages every 5 seconds
     setInterval(updateBusMarkers, 3000); // Update bus locations every 3 seconds
 }
 
-function updateBusMarkers() {
-  Object.keys(busRoutes).forEach(busNumber => {
-      let route = busRoutes[busNumber];
-      let index = currentIndexes[busNumber];
-      let currentLocation = route[index];
-
-      if (!busMarkers[busNumber]) {
-          // Create a new marker if one doesn't exist
-          busMarkers[busNumber] = new google.maps.Marker({
-              position: currentLocation,
-              map: map,
-              title: `Bus ${busNumber}`
-          });
-      } else {
-          // Move the existing marker to the new position
-          busMarkers[busNumber].setPosition(new google.maps.LatLng(currentLocation.lat, currentLocation.lng));
+function updateBusMarkers(selectedBusNumber) {
+  // First, remove all markers except for the selected bus
+  Object.keys(busMarkers).forEach(busNumber => {
+      if (busNumber !== selectedBusNumber && busMarkers[busNumber]) {
+          busMarkers[busNumber].setMap(null); // Hide the marker
       }
-
-      // Update the index for the next update
-      currentIndexes[busNumber] = (index + 1) % route.length; // Loop back to the start
   });
 
-  //setTimeout(updateBusMarkers, 3000); // Update position every 3 seconds
+  // Proceed only if a bus is selected
+  if (!selectedBusNumber) return;
+
+  let route = busRoutes[selectedBusNumber];
+  let index = currentIndexes[selectedBusNumber];
+  let currentLocation = route[index];
+
+  if (!busMarkers[selectedBusNumber]) {
+      // Create a new marker if one doesn't exist for the selected bus
+      busMarkers[selectedBusNumber] = new google.maps.Marker({
+          position: currentLocation,
+          map: map,
+          title: `Bus ${selectedBusNumber}`
+      });
+  } else {
+      // If it exists but was hidden, put it back on the map
+      busMarkers[selectedBusNumber].setMap(map);
+      busMarkers[selectedBusNumber].setPosition(new google.maps.LatLng(currentLocation.lat, currentLocation.lng));
+  }
+
+  // Update the index for the next update, cycling through the route
+  currentIndexes[selectedBusNumber] = (index + 1) % route.length;
 }
+
 
 // Display the next message from the queue
 function displayNextMessage() {
@@ -106,10 +108,21 @@ function checkAndToggleDirectionIfNeeded() {
 }
 
 
-// DOMContentLoaded listener to set everything up
-document.addEventListener('DOMContentLoaded', fetchDelayMessages);
-
-  initMap(); // Initialize the map
+document.addEventListener('DOMContentLoaded', function() {
   
   fetchDelayMessages(); // Fetch messages
- 
+  const dropdown = document.getElementById('bus-dropdown');
+  dropdown.addEventListener('change', function() {
+      selectedBusNumber = this.value; // Update the global variable
+      updateBusMarkers(selectedBusNumber); // Initially set marker for selected bus
+  });
+
+  setInterval(() => {
+      if (selectedBusNumber) {
+          updateBusMarkers(selectedBusNumber); // Continually update the marker for the selected bus
+      }
+  }, 3000); // Update every 3 seconds, adjust as needed
+});
+
+initMap(); // Initialize the map
+
