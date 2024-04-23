@@ -9,29 +9,22 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.static('website'));
+let direction = 'FORWARD'; // This can be stored per bus in a more persistent way if needed
 
 function fetchAllBusLocations() {
   return new Promise((resolve, reject) => {
+    const orderBy = direction === 'FORWARD' ? 'ASC' : 'DESC';
     const query = `
       SELECT 
-        l1.BusNumber,
-        l1.Latitude,
-        l1.Longitude,
-        l1.Timestamp,
-        l1.Status
+        BusNumber,
+        Latitude,
+        Longitude,
+        Timestamp,
+        Status
       FROM 
-        AWS.Locations l1
-      INNER JOIN (
-        SELECT 
-          BusNumber, 
-          MAX(Timestamp) AS latest_timestamp
-        FROM 
-          AWS.Locations
-        GROUP BY 
-          BusNumber
-      ) l2 ON l1.BusNumber = l2.BusNumber AND l1.Timestamp = l2.latest_timestamp
+        AWS.Locations
       ORDER BY 
-        l1.BusNumber ASC
+        Timestamp ${orderBy}
     `;
 
     db.query(query, (error, results) => {
@@ -46,6 +39,12 @@ function fetchAllBusLocations() {
     });
   });
 }
+
+app.get('/api/toggle-direction', (req, res) => {
+  direction = direction === 'FORWARD' ? 'REVERSE' : 'FORWARD';
+  res.send(`Direction toggled to ${direction}`);
+});
+
 
 app.get('/api/latest-bus-locations', async (req, res) => {
   try {

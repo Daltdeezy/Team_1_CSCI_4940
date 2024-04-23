@@ -1,7 +1,7 @@
 from flask import Flask, jsonify
-from trafficEvents import simulate_multiple_events_and_delays
-from nlpMessaging import generate_message
 from flask_cors import CORS
+from trafficEvents import simulate_events  # Adjusted import
+from nlpMessaging import generate_message
 
 app = Flask(__name__)
 CORS(app)
@@ -11,8 +11,11 @@ def get_delay_message():
     total_delay = 0
     messages = []
     
-    for _ in range(4):  # Simulate receiving 4 events throughout a day
-        event, delay = simulate_multiple_events_and_delays()
+    # Simulate 5 events
+    time_of_day = 'day'  # This can be dynamically determined as needed
+    simulated_events = simulate_events(time_of_day, num_events=5)
+
+    for event, delay in simulated_events:
         total_delay += delay
         message = generate_message(event, delay, total_delay)
         messages.append(message)

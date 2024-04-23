@@ -57,6 +57,10 @@ def simulate_multiple_events_and_delays(time_of_day, num_events):
             event_history.pop(0)
     return events_and_delays, probs
 
+def simulate_events(time_of_day, num_events=5):
+    events_and_delays, _ = simulate_multiple_events_and_delays(time_of_day, num_events)
+    return events_and_delays
+
 # Set time of day for testing purposes
 time_of_day = 'day'  
 
